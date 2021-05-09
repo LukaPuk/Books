@@ -1,0 +1,6 @@
+sql("
+
+ALTER TABLE borrowedbooks
+ADD UNIQUE (user_id, book_id)
+
+")

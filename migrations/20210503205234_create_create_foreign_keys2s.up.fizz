@@ -1,0 +1,3 @@
+sql("
+ALTER TABLE borrowedbooks ADD CONSTRAINT borrowedbooks_bookid_fk FOREIGN KEY (book_id) REFERENCES books(id) ON DELETE CASCADE ON UPDATE CASCADE;
+")

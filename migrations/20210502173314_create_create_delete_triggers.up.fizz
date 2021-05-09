@@ -1,0 +1,25 @@
+sql("
+
+CREATE OR REPLACE FUNCTION book_avaliability() RETURNS trigger AS $$
+BEGIN
+	IF (TG_OP = 'DELETE') then
+		UPDATE books
+		SET availability= availability+1
+		WHERE id in (select bb.book_id from old_table bb);
+	ELSIF (TG_OP = 'INSERT') THEN
+		UPDATE books
+		SET availability= availability-1
+		WHERE id in (select bb.book_id from new_table bb);
+	END IF;
+	RETURN NULL;
+END;
+$$ LANGUAGE plpgsql;
+
+
+CREATE TRIGGER book_availability_delete AFTER DELETE ON borrowedbooks
+REFERENCING OLD TABLE as old_table
+FOR EACH STATEMENT EXECUTE FUNCTION book_avaliability();
+
+
+
+")

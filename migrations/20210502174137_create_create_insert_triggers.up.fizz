@@ -1,0 +1,7 @@
+sql("
+
+CREATE TRIGGER book_availability_insert AFTER INSERT ON borrowedbooks
+REFERENCING NEW TABLE as new_table
+FOR EACH STATEMENT EXECUTE FUNCTION book_avaliability();
+
+")

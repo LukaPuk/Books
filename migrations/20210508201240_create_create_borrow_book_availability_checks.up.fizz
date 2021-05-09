@@ -1,0 +1,24 @@
+
+sql("
+create or replace function borrowbook(userid int, bookid int) returns integer
+	AS $$
+	declare
+		nullint integer;
+	begin
+		select availability from books
+		into nullint
+		where books.id = bookid;
+		if nullint <> 0 then
+			INSERT into borrowedbooks (user_id, book_id) values (userid, bookid);
+			return bookid;
+		else
+			if nullint is null THEN
+				raise 'Book doesnt exist';
+			else
+				raise 'Book is currently not available';
+			end if;
+		end if;
+	end
+	$$ LANGUAGE plpgsql;
+
+	")

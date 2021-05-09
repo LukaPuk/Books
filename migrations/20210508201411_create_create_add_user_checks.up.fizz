@@ -1,0 +1,22 @@
+sql("
+create or replace function adduser(firstname varchar(100), lastname varchar(100)) returns varchar(100)
+			AS $$
+			declare
+				numint integer;
+			begin
+				select count(*) from users u
+				into numint
+				where u.first_name = firstname and u.last_name = lastname;
+				if numint = 0 then
+					INSERT into users (first_name, last_name) values (firstname, lastname);
+					return firstname;
+				else
+					raise 'User Already In Database';
+
+				end if;
+		end
+		$$ LANGUAGE plpgsql;
+
+
+
+")

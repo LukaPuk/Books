@@ -1,0 +1,4 @@
+sql("
+DROP TRIGGER IF EXISTS book_availability_insert ON borrowedbooks;
+
+")

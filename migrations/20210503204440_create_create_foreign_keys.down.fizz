@@ -1,0 +1,3 @@
+sql("
+ALTER TABLE borrowedbooks DROP CONSTRAINT borrowedbooks_userid_fk;
+")
