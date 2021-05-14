@@ -20,8 +20,8 @@ func InitRoutes() http.Handler {
 	router.HandleFunc("/borrowbook", handlers.BorrowBook).Methods("POST")
 	router.HandleFunc("/returnbook", handlers.ReturnBook).Methods("POST")
 	router.HandleFunc("/delete", handlers.DeleteUser).Methods("POST")
-	router.HandleFunc("/userapi/{id}", handlers.GetUserBooksApi).Methods("GET")
-	router.HandleFunc("/user/{id}", handlers.GetUserBooks).Methods("GET")
+	router.HandleFunc("/userbooksapi/{id}", handlers.GetUserBooksApi).Methods("GET")
+	router.HandleFunc("/userbooks/{id}", handlers.GetUserBooks).Methods("GET")
 	router.HandleFunc("/all-borrowed-booksapi", handlers.GetAllBorrowedBooksApi).Methods("GET")
 	router.HandleFunc("/all-borrowed-books", handlers.GetAllBorrowedBooks).Methods("GET")
 

@@ -35,7 +35,6 @@
     })
 
         .then(response => response.json()).then(data => {
-        console.log(data)
         if (data) { // ok je spremenljivka v nasem jsonu, zato je truthy
 
 
@@ -61,7 +60,7 @@
                 // }
                 td[5].innerHTML = `<button type="button" id="return" style="font-size: 8px;" >X</button>`
                 td[5].addEventListener("click", function() {
-                    var result = confirm(`Want to return ${td[1].innerText} for User ${td[3].innerText} ${td[4].innerText}?`);
+                    let result = confirm(`Want to return ${td[1].innerText} for User ${td[3].innerText} ${td[4].innerText}?`);
                     if (result) {
                         fetch("/returnbook", {
                             method: "post",

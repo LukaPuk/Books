@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"github.com/LukaPuk/Books/internal/driver"
 	"github.com/subosito/gotenv"
 	"log"
@@ -23,13 +22,6 @@ func main() {
 	if err != nil {
 		log.Fatal()
 	}
-
-	fmt.Println("test")
-
-	//_,  err = render.CreateTemplateCache()
-	//if err != nil {
-	//	log.Fatal("cannot create template cache")
-	//}
 
 	router := InitRoutes()
 

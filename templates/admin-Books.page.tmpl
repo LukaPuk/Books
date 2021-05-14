@@ -33,7 +33,7 @@
     })
 
         .then(response => response.json()).then(data => {
-        if (data) { // ok je spremenljivka v nasem jsonu, zato je truthy
+        if (data) {
             for (let i = 0; i < data.length; i++) {
             let newrow = [data[i]["id"].toString(), data[i]["title"], data[i]["availability"].toString()];
             dataTable.rows().add(newrow)
@@ -46,10 +46,6 @@
             for (let item of borrowBtn) {
                 let td = item.querySelectorAll("td");
                 if (td && td.length > 2) {
-                    // let borrow = td[3]
-                    // if (parseInt(td[3].innerText) > 0) {
-                    //     borrow.innerHTML = `<a href="user/${td[0].innerText}">`+ td[3].innerText +'</a>'
-                    // }
                     if (parseInt(td[2].innerText) > 0) {
                     td[3].innerHTML = `<button type="button" id="borrow" style="font-size: 8px;" >X</button>`;
 

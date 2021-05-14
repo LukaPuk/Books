@@ -1,5 +1,6 @@
 package models
 
+
 type Book struct {
 	ID           int    `json:"id"`
 	Title        string `json:"title"`
@@ -13,6 +14,7 @@ type User struct {
 	BorrowedCount int    `json:"borrowed_count"`
 }
 
+// All books by user
 type UserBooks struct {
 	ID        int    `json:"id"`
 	FirstName string `json:"first_name"`
@@ -20,6 +22,7 @@ type UserBooks struct {
 	BookId    int    `json:"bookid"`
 	Book      string `json:"book"`
 }
+
 
 type BorrowBook struct {
 	ID     int `json:"id"`

@@ -31,13 +31,12 @@
     let id = window.location.href.toString().slice(lastslash+1)
 
 
-    fetch("/userapi/"+ id, {
+    fetch("/userbooksapi/"+ id, {
         method: "get",
     })
 
         .then(response => response.json()).then(data => {
-        console.log(data)
-        if (data) { // ok je spremenljivka v nasem jsonu, zato je truthy
+        if (data) {
 
 
             for (let i = 0; i < data.length; i++) {
@@ -53,14 +52,9 @@
         for (let item of Returnbtn) {
             let td = item.querySelectorAll("td");
             if (td && td.length > 2) {
-                // let borrow = td[3]
-                // if (parseInt(td[3].innerText) > 0) {
-                //     borrow.innerHTML = `<a href="user/${td[0].innerText}">`+ td[3].innerText +'</a>'
-                // }
                 td[5].innerHTML = `<button type="button" id="return" style="font-size: 8px;" >X</button>`
                 td[5].addEventListener("click", function() {
-                    var result = confirm(`Want to return ${td[4].innerText}?`);
-                    console.log("hello")
+                    let result = confirm(`Want to return ${td[4].innerText}?`);
                     if (result) {
                         fetch("/returnbook", {
                             method: "post",
