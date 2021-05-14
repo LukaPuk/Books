@@ -24,14 +24,9 @@ func Homepage(w http.ResponseWriter, r *http.Request) {
 
 	if err != nil {
 		log.Println(err)
+		return
 	}
 
-}
-
-func LogFatal(err error) {
-	if err != nil {
-		log.Fatal(err)
-	}
 }
 
 //GetBook Gets single Book info(title, Availability) based on Book ID
@@ -73,7 +68,10 @@ func GetUserBooksApi(w http.ResponseWriter, r *http.Request) {
 
 	for rows.Next() {
 		err := rows.Scan(&userBook.ID, &userBook.FirstName, &userBook.LastName, &userBook.BookId, &userBook.Book)
-		LogFatal(err)
+		if err != nil {
+			log.Println(err)
+			return
+		}
 
 		userBooks = append(userBooks, userBook)
 	}
@@ -94,6 +92,7 @@ func GetUserBooks(w http.ResponseWriter, r *http.Request) {
 
 	if err != nil {
 		log.Println(err)
+		return
 	}
 
 }
@@ -105,13 +104,19 @@ func GetBooksApi(w http.ResponseWriter, r *http.Request) {
 
 	rows, err := driver.DB.Query(`select * from books
 							ORDER BY ID ASC`)
-	LogFatal(err)
+	if err != nil {
+		log.Println(err)
+		return
+	}
 
 	defer rows.Close()
 
 	for rows.Next() {
 		err := rows.Scan(&book.ID, &book.Title, &book.Availability)
-		LogFatal(err)
+		if err != nil {
+			log.Println(err)
+			return
+		}
 
 		books = append(books, book)
 	}
@@ -119,7 +124,10 @@ func GetBooksApi(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
 	if err = json.NewEncoder(w).Encode(books); err != nil {
-		LogFatal(err)
+		if err != nil {
+			log.Println(err)
+			return
+		}
 	}
 
 }
@@ -130,11 +138,10 @@ func GetBooks(w http.ResponseWriter, r *http.Request) {
 
 	if err != nil {
 		log.Println(err)
+		return
 	}
 
 }
-
-
 
 //GetAllBorrowedBooksApi Gets JSON with All borrowed books
 func GetAllBorrowedBooksApi(w http.ResponseWriter, r *http.Request) {
@@ -149,12 +156,15 @@ func GetAllBorrowedBooksApi(w http.ResponseWriter, r *http.Request) {
 
 	if err != nil {
 		log.Print(err)
+		return
 	}
-	LogFatal(err)
 
 	for rows.Next() {
 		err := rows.Scan(&userBook.BookId, &userBook.Book, &userBook.ID, &userBook.FirstName, &userBook.LastName)
-		LogFatal(err)
+		if err != nil {
+			log.Println(err)
+			return
+		}
 
 		userBooks = append(userBooks, userBook)
 	}
@@ -162,7 +172,10 @@ func GetAllBorrowedBooksApi(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
 	if err = json.NewEncoder(w).Encode(userBooks); err != nil {
-		LogFatal(err)
+
+		log.Println(err)
+		return
+
 	}
 
 }
@@ -173,6 +186,7 @@ func GetAllBorrowedBooks(w http.ResponseWriter, r *http.Request) {
 
 	if err != nil {
 		log.Println(err)
+		return
 	}
 }
 
@@ -184,11 +198,17 @@ func GetUsersApi(w http.ResponseWriter, r *http.Request) {
 	rows, err := driver.DB.Query(`select u.id, u.first_name , u.last_name, coalesce(b.count, 0) as borrowed_count 
 						from users u left join (select user_id, count(user_id) 
 						from borrowedbooks group by user_id) as b on b.user_id = u.id order by u.id asc`)
-	LogFatal(err)
+	if err != nil {
+		log.Println(err)
+		return
+	}
 
 	for rows.Next() {
 		err := rows.Scan(&user.ID, &user.FirstName, &user.LastName, &user.BorrowedCount)
-		LogFatal(err)
+		if err != nil {
+			log.Println(err)
+			return
+		}
 
 		users = append(users, user)
 	}
@@ -196,7 +216,10 @@ func GetUsersApi(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
 	if err = json.NewEncoder(w).Encode(users); err != nil {
-		LogFatal(err)
+		if err != nil {
+			log.Println(err)
+			return
+		}
 	}
 
 }
@@ -207,6 +230,7 @@ func GetUsers(w http.ResponseWriter, r *http.Request) {
 
 	if err != nil {
 		log.Println(err)
+		return
 	}
 }
 
@@ -216,6 +240,7 @@ func AddUserPage(w http.ResponseWriter, r *http.Request) {
 
 	if err != nil {
 		log.Println(err)
+		return
 	}
 }
 
@@ -226,6 +251,7 @@ func AddUser(w http.ResponseWriter, r *http.Request) {
 	err := r.ParseForm()
 	if err != nil {
 		log.Println(err)
+		return
 	}
 
 	form := r.PostForm
@@ -245,6 +271,7 @@ func AddUser(w http.ResponseWriter, r *http.Request) {
 
 		if err != nil {
 			log.Println(err)
+			return
 		}
 		return
 	}
@@ -254,18 +281,19 @@ func AddUser(w http.ResponseWriter, r *http.Request) {
 
 		if err != nil {
 			log.Println(err)
+			return
 		}
 	} else {
 		_, err = w.Write([]byte("Success!"))
 
 		if err != nil {
 			log.Println(err)
+			return
 
 		}
 	}
 
 }
-
 
 //DeleteUser Deletes User
 func DeleteUser(w http.ResponseWriter, r *http.Request) {
@@ -291,9 +319,12 @@ func DeleteUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	err = json.NewEncoder(w).Encode(UserID)
 
-
-	json.NewEncoder(w).Encode(UserID)
+	if err == nil {
+		log.Println(err)
+		return
+	}
 }
 
 //BorrowBook Borrows Book by User
@@ -301,8 +332,6 @@ func BorrowBook(w http.ResponseWriter, r *http.Request) {
 	var borrowBook models.BorrowBook
 
 	json.NewDecoder(r.Body).Decode(&borrowBook)
-
-
 
 	row := driver.DB.QueryRow("select * from borrowbook($1,$2)", borrowBook.UserID, borrowBook.BookID)
 
@@ -312,18 +341,21 @@ func BorrowBook(w http.ResponseWriter, r *http.Request) {
 
 			if err != nil {
 				log.Println(err)
+				return
 			}
 		} else if strings.Contains(row.Err().Error(), "book_id") {
 			_, err := w.Write([]byte("User already borrowed this book"))
 
 			if err != nil {
 				log.Println(err)
+				return
 			}
 		} else {
 			_, err := w.Write([]byte(row.Err().Error()))
 
 			if err != nil {
 				log.Println(err)
+				return
 			}
 
 		}
@@ -336,13 +368,21 @@ func ReturnBook(w http.ResponseWriter, r *http.Request) {
 	var borrowBook models.BorrowBook
 	var Bookid int
 
-	json.NewDecoder(r.Body).Decode(&borrowBook)
-	err := driver.DB.QueryRow("DELETE FROM borrowedbooks WHERE user_id = $1 AND book_id = $2 RETURNING id",
+	err := json.NewDecoder(r.Body).Decode(&borrowBook)
+	if err != nil {
+		log.Println(err)
+		return
+	}
+
+	err = driver.DB.QueryRow("DELETE FROM borrowedbooks WHERE user_id = $1 AND book_id = $2 RETURNING id",
 		borrowBook.UserID, borrowBook.BookID).Scan(&Bookid)
 
 	if err != nil {
 		_, err = w.Write([]byte("No such user/book relationship"))
-		LogFatal(err)
+		if err != nil {
+			log.Println(err)
+			return
+		}
 		return
 	} else {
 		json.NewEncoder(w).Encode("Success!")
